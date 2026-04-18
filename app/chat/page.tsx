@@ -214,7 +214,7 @@ export default function ChatPage() {
                   borderRadius: '0.5rem',
                   marginTop: '0.25rem'
                 }}>
-                  {m.role === 'user' ? <User size={16} color="#fff" /> : <Bot size={16} color="#3b82f6" />}
+                  {m.role === 'user' ? <UserIcon size={16} color="#fff" /> : <Bot size={16} color="#3b82f6" />}
                 </div>
                 <div style={{
                   maxWidth: '70%',

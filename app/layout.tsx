@@ -5,8 +5,8 @@ import Navbar from '@/components/UI/Navbar';
 import Footer from '@/components/UI/Footer';
 
 export const metadata: Metadata = {
-  title: 'Nexus AI | Premium Customer Support',
-  description: 'Scalable, secure, and AI-powered customer support for modern enterprises.',
+  title: 'NexusAI — AI Career Platform | Job Search, Resume Analyzer & Mentor',
+  description: 'AI-powered career platform: find jobs, analyze resumes, chat with an AI mentor, and get instant voice support. Built for the modern job seeker.',
 };
 
 export default function RootLayout({
