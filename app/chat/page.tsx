@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, User, Bot, Paperclip, MoreVertical, Search, Trash2, Download, AlertCircle } from 'lucide-react';
+import { Send, User as UserIcon, Bot, Paperclip, MoreVertical, Search, Trash2, Download, AlertCircle, ArrowLeft } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client';
+import Link from 'next/link';
 
 interface Message {
   id: string;
@@ -17,15 +20,39 @@ export default function ChatPage() {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push('/auth/login');
+      } else {
+        setLoading(false);
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping]);
+    if (!loading) scrollToBottom();
+  }, [messages, isTyping, loading]);
+
+  if (loading) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#000' }}>
+        <div className="glass-card" style={{ padding: '2rem' }}>
+          <h2>Loading Chat...</h2>
+        </div>
+      </div>
+    );
+  }
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,19 +138,26 @@ export default function ChatPage() {
         justifyContent: 'space-between',
         borderRadius: '1rem'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{ padding: '0.5rem', background: 'var(--glass-bg)', borderRadius: '0.5rem' }}>
-            <Bot size={20} color="#3b82f6" />
-          </div>
-          <div>
-            <h4 style={{ margin: 0 }}>Nexus AI Assistant</h4>
-            <span style={{ fontSize: '0.75rem', color: '#10b981' }}>● Online</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <Link href="/dashboard" style={{ textDecoration: 'none', color: '#a1a1aa', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <ArrowLeft size={18} />
+            <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>Dashboard</span>
+          </Link>
+          <div style={{ width: '1px', height: '20px', background: 'var(--glass-border)' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ padding: '0.5rem', background: 'var(--glass-bg)', borderRadius: '0.5rem' }}>
+              <Bot size={20} color="#3b82f6" />
+            </div>
+            <div>
+              <h4 style={{ margin: 0 }}>Nexus AI Assistant</h4>
+              <span style={{ fontSize: '0.75rem', color: '#10b981' }}>● Online</span>
+            </div>
           </div>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button className="glass" style={{ padding: '0.5rem', background: 'transparent', border: 'none' }}><Search size={18} color="#a1a1aa" /></button>
-          <button className="glass" style={{ padding: '0.5rem', background: 'transparent', border: 'none' }}><Download size={18} color="#a1a1aa" /></button>
-          <button className="glass" style={{ padding: '0.5rem', background: 'transparent', border: 'none' }}><Trash2 size={18} color="#f87171" /></button>
+          <button className="glass" style={{ padding: '0.5rem', background: 'transparent', border: 'none', cursor: 'pointer' }}><Search size={18} color="#a1a1aa" /></button>
+          <button className="glass" style={{ padding: '0.5rem', background: 'transparent', border: 'none', cursor: 'pointer' }}><Download size={18} color="#a1a1aa" /></button>
+          <button className="glass" style={{ padding: '0.5rem', background: 'transparent', border: 'none', cursor: 'pointer' }}><Trash2 size={18} color="#f87171" /></button>
         </div>
       </header>
 

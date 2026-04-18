@@ -4,29 +4,65 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Bot, Mail, Lock, ArrowRight } from 'lucide-react';
+import { supabase } from '@/lib/supabase/client';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
 
   const handleGoogleLogin = async () => {
-    // In production, this would call:
-    // await supabase.auth.signInWithOAuth({ provider: 'google' });
-    router.push('/dashboard');
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          queryParams: {
+            prompt: 'select_account',
+          },
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
   const handleGithubLogin = async () => {
-    // In production, this would call:
-    // await supabase.auth.signInWithOAuth({ provider: 'github' });
-    router.push('/dashboard');
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you would validate with Supabase here
-    router.push('/dashboard');
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,6 +96,20 @@ export default function Login() {
           <p style={{ color: '#a1a1aa' }}>Sign in to your Nexus account.</p>
         </div>
 
+        {error && (
+          <div style={{
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.2)',
+            color: '#f87171',
+            padding: '0.75rem',
+            borderRadius: '0.5rem',
+            marginBottom: '1.5rem',
+            fontSize: '0.875rem'
+          }}>
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <label style={{ fontSize: '0.875rem', fontWeight: '500' }}>Email Address</label>
@@ -69,6 +119,9 @@ export default function Login() {
                 type="email" 
                 placeholder="name@company.com"
                 className="glass"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
                 style={{
                   width: '100%',
                   padding: '0.875rem 1rem 0.875rem 3rem',
@@ -93,6 +146,9 @@ export default function Login() {
                 type="password" 
                 placeholder="••••••••"
                 className="glass"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
                 style={{
                   width: '100%',
                   padding: '0.875rem 1rem 0.875rem 3rem',
@@ -106,21 +162,28 @@ export default function Login() {
             </div>
           </div>
 
-          <button className="glass" style={{
-            background: '#fff',
-            color: '#000',
-            padding: '1rem',
-            borderRadius: '0.75rem',
-            fontWeight: '600',
-            border: 'none',
-            marginTop: '1rem',
-            fontSize: '1rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.5rem'
-          }}>
-            Sign In <ArrowRight size={18} />
+          <button 
+            type="submit"
+            disabled={loading}
+            className="glass" 
+            style={{
+              background: '#fff',
+              color: '#000',
+              padding: '1rem',
+              borderRadius: '0.75rem',
+              fontWeight: '600',
+              border: 'none',
+              marginTop: '1rem',
+              fontSize: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              opacity: loading ? 0.7 : 1,
+              cursor: loading ? 'not-allowed' : 'pointer'
+            }}
+          >
+            {loading ? 'Signing in...' : 'Sign In'} <ArrowRight size={18} />
           </button>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1rem 0' }}>

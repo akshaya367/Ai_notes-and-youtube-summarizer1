@@ -4,29 +4,75 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Bot, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { supabase } from '@/lib/supabase/client';
 
 export default function Signup() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleGoogleLogin = async () => {
-    // In production, this would call:
-    // await supabase.auth.signInWithOAuth({ provider: 'google' });
-    router.push('/dashboard');
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          queryParams: {
+            prompt: 'select_account',
+          },
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
   const handleGithubLogin = async () => {
-    // In production, this would call:
-    // await supabase.auth.signInWithOAuth({ provider: 'github' });
-    router.push('/dashboard');
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate signup
-    router.push('/dashboard');
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) throw error;
+      
+      // If email confirmation is enabled, they might need to check their email
+      // But for simplicity, we'll try to redirect or show a message
+      alert('Signup successful! Please check your email for confirmation if required.');
+      router.push('/auth/login');
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,6 +106,20 @@ export default function Signup() {
           <p style={{ color: '#a1a1aa' }}>Join the Nexus AI platform today.</p>
         </div>
 
+        {error && (
+          <div style={{
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.2)',
+            color: '#f87171',
+            padding: '0.75rem',
+            borderRadius: '0.5rem',
+            marginBottom: '1.5rem',
+            fontSize: '0.875rem'
+          }}>
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <label style={{ fontSize: '0.875rem', fontWeight: '500' }}>Full Name</label>
@@ -69,6 +129,8 @@ export default function Signup() {
                 type="text" 
                 placeholder="John Doe"
                 className="glass"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
                 style={{
                   width: '100%',
@@ -91,6 +153,8 @@ export default function Signup() {
                 type="email" 
                 placeholder="name@company.com"
                 className="glass"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 style={{
                   width: '100%',
@@ -113,6 +177,8 @@ export default function Signup() {
                 type="password" 
                 placeholder="••••••••"
                 className="glass"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
                 style={{
                   width: '100%',
@@ -127,21 +193,28 @@ export default function Signup() {
             </div>
           </div>
 
-          <button className="glass" style={{
-            background: '#fff',
-            color: '#000',
-            padding: '1rem',
-            borderRadius: '0.75rem',
-            fontWeight: '600',
-            border: 'none',
-            marginTop: '1rem',
-            fontSize: '1rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.5rem'
-          }}>
-            Get Started <ArrowRight size={18} />
+          <button 
+            type="submit"
+            disabled={loading}
+            className="glass" 
+            style={{
+              background: '#fff',
+              color: '#000',
+              padding: '1rem',
+              borderRadius: '0.75rem',
+              fontWeight: '600',
+              border: 'none',
+              marginTop: '1rem',
+              fontSize: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              opacity: loading ? 0.7 : 1,
+              cursor: loading ? 'not-allowed' : 'pointer'
+            }}
+          >
+            {loading ? 'Creating account...' : 'Get Started'} <ArrowRight size={18} />
           </button>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1rem 0' }}>
