@@ -5,7 +5,7 @@ import Navbar from '@/components/UI/Navbar';
 import Footer from '@/components/UI/Footer';
 
 export const metadata: Metadata = {
-  title: 'NexusAI Support — AI Customer Success Platform | Helpdesk, Knowledge Base & AI Agent',
+  title: 'NexusAI-Support — AI Customer Success Platform | Helpdesk, Knowledge Base & AI Agent',
   description: 'AI-powered customer support platform: manage tickets, automate responses, and analyze sentiment. Built for modern support teams.',
 };
 

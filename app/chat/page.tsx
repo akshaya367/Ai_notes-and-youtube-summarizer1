@@ -154,7 +154,7 @@ export default function ChatPage() {
             timestamp: new Date()
           }]);
           
-          const greeting = "Hello, I am your Nexus Support Agent. Thank you for providing your number. How can I help you today?";
+          const greeting = "Hello, I am your NexusAI Support Agent. Thank you for providing your number. How can I help you today?";
           speak(greeting);
 
           // Attempt real Twilio call
@@ -291,7 +291,7 @@ export default function ChatPage() {
               <Bot size={22} color="#3b82f6" />
             </div>
             <div>
-              <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: '700' }}>Live Agent Hub</h4>
+              <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: '700' }}>NexusAI-Support</h4>
               <span style={{ fontSize: '0.75rem', color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                 <span className="pulse-dot"></span> Online and Ready
               </span>

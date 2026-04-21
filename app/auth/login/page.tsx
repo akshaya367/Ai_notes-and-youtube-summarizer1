@@ -78,7 +78,7 @@ export default function Login() {
           }}>
             <Bot size={32} color="#3b82f6" />
           </div>
-          <h1 style={{ fontSize: '1.875rem', marginBottom: '0.5rem' }}>Nexus Support</h1>
+          <h1 style={{ fontSize: '1.875rem', marginBottom: '0.5rem' }}>NexusAI-Support</h1>
           <p style={{ color: '#a1a1aa' }}>Sign in to your Support Mission Control.</p>
         </div>
 

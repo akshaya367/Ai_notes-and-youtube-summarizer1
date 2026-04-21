@@ -44,7 +44,7 @@ export default function Navbar() {
         <div style={{ padding: '0.4rem', background: 'var(--accent-gradient)', borderRadius: '0.5rem' }}>
           <Bot size={20} color="#fff" />
         </div>
-        <span style={{ fontWeight: '700', fontSize: '1.25rem', letterSpacing: '-0.02em' }}>Nexus<span style={{ color: '#3b82f6' }}>Support</span></span>
+        <span style={{ fontWeight: '700', fontSize: '1.25rem', letterSpacing: '-0.02em' }}>NexusAI<span style={{ color: '#3b82f6' }}>-Support</span></span>
       </Link>
 
       {/* Desktop Links */}

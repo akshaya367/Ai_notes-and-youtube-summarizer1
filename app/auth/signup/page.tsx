@@ -103,7 +103,7 @@ export default function Signup() {
             <Bot size={32} color="#3b82f6" />
           </div>
           <h1 style={{ fontSize: '1.875rem', marginBottom: '0.5rem' }}>Create Account</h1>
-          <p style={{ color: '#a1a1aa' }}>Join the Nexus AI platform today.</p>
+          <p style={{ color: '#a1a1aa' }}>Join the NexusAI-Support platform today.</p>
         </div>
 
         {error && (
