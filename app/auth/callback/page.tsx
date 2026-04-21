@@ -8,27 +8,37 @@ export default function AuthCallback() {
   const router = useRouter();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
+    // Handle the code exchange for PKCE
+    const handleAuth = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (session) {
         router.push('/dashboard');
-      } else if (event === 'INITIAL_SESSION' && session) {
+      } else if (error) {
+        console.error('Auth error:', error.message);
+        router.push('/auth/login?error=auth_failed');
+      }
+    };
+
+    handleAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event, !!session);
+      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
         router.push('/dashboard');
       } else if (event === 'SIGNED_OUT') {
         router.push('/auth/login');
       }
     });
 
-    // Fallback: check session manually after a short delay if no event triggers
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        router.push('/dashboard');
-      }
-    };
+    // Fallback: search params check
+    const queryParams = new URLSearchParams(window.location.search);
+    if (queryParams.get('error')) {
+      router.push(`/auth/login?error=${queryParams.get('error_description') || 'Authentication failed'}`);
+    }
 
     const timer = setTimeout(() => {
-      checkSession();
-    }, 2000);
+      handleAuth();
+    }, 5000);
 
     return () => {
       subscription.unsubscribe();

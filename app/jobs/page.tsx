@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Briefcase, MapPin, TrendingUp, Building2, Loader2, Sparkles, ArrowRight } from 'lucide-react';
+import { Search, Briefcase, MapPin, TrendingUp, Building2, Loader2, Sparkles, ArrowRight, Bot } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client';
 
 interface Job {
   title: string;
@@ -16,6 +19,15 @@ export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) router.push('/auth/login');
+    };
+    checkAuth();
+  }, [router]);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,10 +66,10 @@ export default function JobsPage() {
           <Sparkles size={14} /> Powered by AI
         </div>
         <h1 className="gradient-text" style={{ fontSize: '3.5rem', lineHeight: '1.15', marginBottom: '1rem', fontWeight: '800' }}>
-          AI Job Search
+          Support Intelligence
         </h1>
         <p style={{ fontSize: '1.15rem', color: '#a1a1aa', maxWidth: '550px', margin: '0 auto' }}>
-          Enter your skills and let AI find the best-matching roles, salaries, and companies in India.
+          Enter ticket logs or customer feedback and let AI categorize issues, analyze sentiment, and suggest resolutions.
         </p>
       </div>
 
@@ -70,7 +82,7 @@ export default function JobsPage() {
           <Search size={20} color="#71717a" />
           <input
             type="text"
-            placeholder="e.g. React, Node.js, Python, AWS..."
+            placeholder="e.g. Refund issues, Login bugs, Feature requests..."
             value={skills}
             onChange={(e) => setSkills(e.target.value)}
             style={{
@@ -89,15 +101,15 @@ export default function JobsPage() {
               opacity: isLoading || !skills.trim() ? 0.6 : 1
             }}
           >
-            {isLoading ? <><Loader2 size={18} className="spin" /> Searching...</> : <>Find Roles <ArrowRight size={16} /></>}
+            {isLoading ? <><Loader2 size={18} className="spin" /> Analyzing...</> : <>Analyze Tickets <ArrowRight size={16} /></>}
           </button>
         </div>
       </form>
 
       {/* Quick Fill */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center', marginBottom: '3rem' }}>
-        <span style={{ fontSize: '0.8rem', color: '#71717a', marginRight: '0.25rem', lineHeight: '2.2' }}>Quick:</span>
-        {quickSkills.map(s => (
+        <span style={{ fontSize: '0.8rem', color: '#71717a', marginRight: '0.25rem', lineHeight: '2.2' }}>Common:</span>
+        {['Billing', 'Technical', 'Account', 'Mobile App', 'Feedback'].map(s => (
           <button key={s} onClick={() => setSkills(prev => prev ? `${prev}, ${s}` : s)} style={{
             padding: '0.35rem 0.85rem', borderRadius: '2rem', fontSize: '0.8rem', fontWeight: '500',
             background: 'rgba(255,255,255,0.04)', border: '1px solid var(--glass-border)', color: '#a1a1aa', cursor: 'pointer'
@@ -118,7 +130,7 @@ export default function JobsPage() {
       {!isLoading && jobs.length > 0 && (
         <div className="fade-in" style={{ display: 'grid', gap: '1.5rem' }}>
           <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>
-            Found <span style={{ color: '#3b82f6' }}>{jobs.length}</span> matching roles
+            Generated <span style={{ color: '#3b82f6' }}>{jobs.length}</span> support insights
           </h2>
           {jobs.map((job, idx) => (
             <div key={idx} className="glass-card" style={{
@@ -128,9 +140,9 @@ export default function JobsPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
                   <div style={{
                     width: '42px', height: '42px', borderRadius: '0.75rem',
-                    background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    background: 'rgba(5b,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center'
                   }}>
-                    <Briefcase size={20} color="#3b82f6" />
+                    <Bot size={20} color="#3b82f6" />
                   </div>
                   <div>
                     <h3 style={{ fontSize: '1.15rem', margin: 0, fontWeight: '700' }}>{job.title}</h3>
@@ -147,21 +159,29 @@ export default function JobsPage() {
                     </span>
                   ))}
                 </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', fontSize: '0.85rem', color: '#a1a1aa' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <Building2 size={14} /> {job.companies?.join(', ')}
-                  </span>
+                <div style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.02)', borderRadius: '1rem', border: '1px solid var(--glass-border)' }}>
+                  <h4 style={{ fontSize: '0.85rem', color: '#10b981', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <TrendingUp size={14} /> Step-by-Step Resolution Plan
+                  </h4>
+                  <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                    {job.companies?.map((step, i) => (
+                      <li key={i} style={{ display: 'flex', gap: '0.75rem', fontSize: '0.85rem', color: '#a1a1aa', lineHeight: '1.5' }}>
+                        <span style={{ color: '#3b82f6', fontWeight: '800' }}>{i + 1}.</span>
+                        {step}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
 
               <div style={{
                 padding: '0.75rem 1.25rem', borderRadius: '0.75rem',
-                background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)',
+                background: job.salary?.includes('High') ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)', 
+                border: `1px solid ${job.salary?.includes('High') ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}`,
                 textAlign: 'center', whiteSpace: 'nowrap'
               }}>
-                <div style={{ fontSize: '0.7rem', color: '#10b981', textTransform: 'uppercase', fontWeight: '600', marginBottom: '0.2rem' }}>Salary</div>
-                <div style={{ fontSize: '1rem', fontWeight: '700', color: '#34d399' }}>{job.salary}</div>
+                <div style={{ fontSize: '0.7rem', color: job.salary?.includes('High') ? '#ef4444' : '#10b981', textTransform: 'uppercase', fontWeight: '600', marginBottom: '0.2rem' }}>Priority</div>
+                <div style={{ fontSize: '1rem', fontWeight: '700', color: '#fff' }}>{job.salary || 'MEDIUM'}</div>
               </div>
             </div>
           ))}
@@ -170,7 +190,7 @@ export default function JobsPage() {
 
       {!isLoading && searched && jobs.length === 0 && (
         <div className="glass-card fade-in" style={{ textAlign: 'center', padding: '3rem' }}>
-          <p style={{ color: '#a1a1aa' }}>No results found. Try different skills.</p>
+          <p style={{ color: '#a1a1aa' }}>No insights generated. Try entering more technical details.</p>
         </div>
       )}
 

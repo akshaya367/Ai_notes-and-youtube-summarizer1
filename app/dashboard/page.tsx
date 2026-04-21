@@ -32,11 +32,16 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) {
+          router.push('/auth/login');
+        } else {
+          setUser(session.user);
+        }
+      } catch (error) {
+        console.error('Session fetch failed:', error);
         router.push('/auth/login');
-      } else {
-        setUser(user);
       }
       setLoading(false);
     };

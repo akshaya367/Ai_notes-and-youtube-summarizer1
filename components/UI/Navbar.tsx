@@ -25,10 +25,10 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { href: '/jobs', label: 'Find Jobs' },
-    { href: '/analyzer', label: 'Resume AI' },
-    { href: '/chat', label: 'AI Chat' },
-    { href: '/dashboard', label: 'Dashboard' },
+    { href: '/jobs', label: 'Helpdesk' },
+    { href: '/analyzer', label: 'Knowledge AI' },
+    { href: '/chat', label: 'Support AI' },
+    { href: '/dashboard', label: 'Platform' },
   ];
 
   return (
@@ -44,7 +44,7 @@ export default function Navbar() {
         <div style={{ padding: '0.4rem', background: 'var(--accent-gradient)', borderRadius: '0.5rem' }}>
           <Bot size={20} color="#fff" />
         </div>
-        <span style={{ fontWeight: '700', fontSize: '1.25rem', letterSpacing: '-0.02em' }}>Nexus<span style={{ color: '#3b82f6' }}>AI</span></span>
+        <span style={{ fontWeight: '700', fontSize: '1.25rem', letterSpacing: '-0.02em' }}>Nexus<span style={{ color: '#3b82f6' }}>Support</span></span>
       </Link>
 
       {/* Desktop Links */}

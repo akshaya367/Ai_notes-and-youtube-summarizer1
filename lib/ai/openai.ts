@@ -21,9 +21,9 @@ export async function generateAIResponse(messages: { role: 'user' | 'assistant' 
   }
 
   const response = await groq.chat.completions.create({
-    model: 'llama3-8b-8192',
+    model: 'llama-3.1-8b-instant',
     messages: [
-      { role: 'system', content: 'You are a helpful, professional AI assistant for Nexus — a premium AI-powered platform. You help users with career advice, resume tips, job searching, and general questions. Be concise, friendly, and actionable.' },
+      { role: 'system', content: 'You are Nexus Assistant, a premium AI-powered Customer Support specialist. You help support teams analyze tickets, quality check documentation, and resolve customer issues effectively. Be concise, professional, and empathetic.' },
       ...messages
     ],
     stream: true,

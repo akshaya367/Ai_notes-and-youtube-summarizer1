@@ -1,7 +1,11 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Upload, Loader2, CheckCircle2, Sparkles, TrendingUp, AlertCircle, RotateCcw, FileText } from 'lucide-react';
+import { Upload, Loader2, CheckCircle2, Sparkles, TrendingUp, AlertCircle, RotateCcw, FileText, ArrowLeft } from 'lucide-react';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client';
+import Link from 'next/link';
 
 interface Analysis {
   score: number;
@@ -18,6 +22,15 @@ export default function AnalyzerPage() {
   const [pasteMode, setPasteMode] = useState(false);
   const [pasteText, setPasteText] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) router.push('/auth/login');
+    };
+    checkAuth();
+  }, [router]);
 
   const analyzeFile = async (file: File) => {
     setIsAnalyzing(true);
@@ -91,13 +104,13 @@ export default function AnalyzerPage() {
           padding: '0.4rem 1rem', background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)',
           borderRadius: '2rem', fontSize: '0.8rem', color: '#a78bfa', marginBottom: '1.5rem', fontWeight: '600'
         }}>
-          <Sparkles size={14} /> ATS-Powered Analysis
+          <Sparkles size={14} /> AI-Powered Documentation Analysis
         </div>
         <h1 className="gradient-text" style={{ fontSize: '3.5rem', lineHeight: '1.15', marginBottom: '1rem', fontWeight: '800' }}>
-          Resume Analyzer
+          Knowledge Base AI
         </h1>
         <p style={{ fontSize: '1.15rem', color: '#a1a1aa', maxWidth: '550px', margin: '0 auto' }}>
-          Upload your resume or paste text. AI will score it against ATS standards and suggest improvements.
+          Upload support manuals or product docs. AI will score the depth of information and identify gaps in your knowledge base.
         </p>
       </div>
 
@@ -210,15 +223,15 @@ export default function AnalyzerPage() {
               </div>
             </div>
             <div style={{ flex: 1 }}>
-              <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>ATS Quality Score</h2>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Knowledge Quality Score</h2>
               <p style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '1rem' }}>
-                Best fit: <strong style={{ color: '#fff' }}>{analysis.industryFit}</strong>
+                Content Fit: <strong style={{ color: '#fff' }}>Technical Support</strong>
               </p>
               <button onClick={() => { setAnalysis(null); setFileName(''); setPasteText(''); }} style={{
                 display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem',
                 color: '#60a5fa', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '500'
               }}>
-                <RotateCcw size={14} /> Analyze another resume
+                <RotateCcw size={14} /> Analyze another document
               </button>
             </div>
           </div>
@@ -228,7 +241,7 @@ export default function AnalyzerPage() {
             <div className="glass-card" style={{ padding: '2rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
                 <TrendingUp size={20} color="#10b981" />
-                <h3 style={{ fontSize: '1.1rem', margin: 0 }}>Key Improvements</h3>
+                <h3 style={{ fontSize: '1.1rem', margin: 0 }}>Content Clarity</h3>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {analysis.improvements.map((item, i) => (
@@ -242,7 +255,7 @@ export default function AnalyzerPage() {
             <div className="glass-card" style={{ padding: '2rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
                 <Sparkles size={20} color="#f59e0b" />
-                <h3 style={{ fontSize: '1.1rem', margin: 0 }}>Missing Skills</h3>
+                <h3 style={{ fontSize: '1.1rem', margin: 0 }}>Information Gaps</h3>
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
                 {analysis.missingSkills.map((skill, i) => (

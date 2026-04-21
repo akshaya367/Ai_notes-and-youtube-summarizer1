@@ -29,21 +29,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No resume content provided' }, { status: 400 });
     }
 
-    const prompt = `Act as an expert ATS (Applicant Tracking System) and Career Coach.
-Analyze this resume text and provide:
-1. ATS Score (0-100)
-2. Key Improvements (3-5 actionable points)
-3. Missing Skills (top high-demand skills the user should add)
-4. Industry Fit (which industries/roles they are best suited for)
+    const prompt = `Act as an expert Helpdesk Content Strategist.
+Analyze this documentation text and provide:
+1. Knowledge Quality Score (0-100)
+2. Content Clarity Improvements (3-5 points)
+3. Information Gaps (top missing topics/details)
+4. Use Case Fit (which support tier or scenario this doc is best for)
 
-Resume Text: "${textContent.substring(0, 3000)}"
+Doc Text: "${textContent.substring(0, 3000)}"
 
-Format the response as a valid JSON object with these exact keys: "score" (number), "improvements" (array of strings), "missingSkills" (array of strings), "industryFit" (string).
+Format the response as a valid JSON object with these exact keys: "score" (number), "improvements" (array of strings), "missingSkills" (array of strings - use for gaps), "industryFit" (string - use for fit).
 Return ONLY the JSON object, no markdown, no code fences, no explanation.`;
 
     const chatCompletion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
-      model: 'llama3-8b-8192',
+      model: 'llama-3.3-70b-versatile',
       temperature: 0.5,
     });
 
@@ -58,15 +58,15 @@ Return ONLY the JSON object, no markdown, no code fences, no explanation.`;
     // Return a sensible fallback so the UI always has data
     return NextResponse.json({
       analysis: {
-        score: 72,
+        score: 85,
         improvements: [
-          "Add more quantifiable achievements (numbers, percentages)",
-          "Use stronger action verbs (Led, Architected, Optimized)",
-          "Include a professional summary section at the top",
-          "Add relevant certifications and online courses"
+          "Improve step-by-step troubleshooting instructions",
+          "Add more screenshots or visual placeholders",
+          "Clarify error codes and their meanings",
+          "Include a FAQ section for common edge cases"
         ],
-        missingSkills: ["Docker", "Kubernetes", "CI/CD", "System Design", "TypeScript"],
-        industryFit: "Product-based Tech Companies & SaaS Startups"
+        missingSkills: ["API Integration Docs", "Refund Policy Details", "Escalation Paths"],
+        industryFit: "Technical Support & Customer Success"
       }
     });
   }

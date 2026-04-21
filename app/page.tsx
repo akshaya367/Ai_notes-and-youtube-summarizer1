@@ -14,15 +14,15 @@ export default function Home() {
           borderRadius: '2rem', fontSize: '0.875rem', marginBottom: '2rem', backdropFilter: 'blur(8px)'
         }}>
           <Sparkles size={16} color="#3b82f6" />
-          <span style={{ color: '#a1a1aa' }}>AI-Powered Career Platform</span>
+          <span style={{ color: '#a1a1aa' }}>AI-Powered Customer Success Platform</span>
         </div>
 
         <h1 className="gradient-text" style={{ fontSize: '4.5rem', lineHeight: '1.1', marginBottom: '1.5rem', fontWeight: '800' }}>
-          Your AI Career <br />Command Center
+          Your AI Support <br />Mission Control
         </h1>
 
         <p style={{ fontSize: '1.25rem', color: '#a1a1aa', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem' }}>
-          Find jobs, analyze your resume, chat with an AI mentor, and get instant voice support — all powered by cutting-edge AI.
+          Automate tickets, build knowledge bases, chat with AI agents, and provide instant multi-channel support — all powered by advanced AI.
         </p>
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -31,16 +31,16 @@ export default function Home() {
               padding: '0.875rem 2rem', borderRadius: '0.75rem', fontWeight: '600',
               display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem'
             }}>
-              Get Started Free <ArrowRight size={18} />
+              Start Scaling Support <ArrowRight size={18} />
             </button>
           </Link>
-          <Link href="/jobs" style={{ textDecoration: 'none' }}>
+          <Link href="/dashboard" style={{ textDecoration: 'none' }}>
             <button className="glass" style={{
               background: 'transparent', color: '#fff', padding: '0.875rem 2rem',
               borderRadius: '0.75rem', fontWeight: '600', border: '1px solid var(--glass-border)', fontSize: '1rem',
               cursor: 'pointer'
             }}>
-              Explore Jobs
+              View Platform
             </button>
           </Link>
         </div>
@@ -49,30 +49,30 @@ export default function Home() {
       {/* Feature Cards */}
       <div style={{ marginTop: '8rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', textAlign: 'left' }}>
         <FeatureCard
-          icon={<Briefcase size={24} color="#3b82f6" />}
-          title="AI Job Search"
-          description="Enter your skills and get personalized job recommendations with salary data for the Indian market."
+          icon={<Bot size={24} color="#3b82f6" />}
+          title="AI Ticket Intelligence"
+          description="Automatically categorize, prioritize, and route tickets based on customer sentiment and urgency."
           href="/jobs"
           accent="#3b82f6"
         />
         <FeatureCard
           icon={<FileText size={24} color="#8b5cf6" />}
-          title="Resume Analyzer"
-          description="Upload your resume and get an ATS score, skill gap analysis, and actionable improvements."
+          title="Knowledge Base AI"
+          description="Upload your docs and let AI answer customer queries instantly with 99% accuracy."
           href="/analyzer"
           accent="#8b5cf6"
         />
         <FeatureCard
           icon={<MessageSquare size={24} color="#10b981" />}
-          title="AI Career Mentor"
-          description="Chat with an AI mentor for career advice, interview prep, and professional guidance."
+          title="AI Support Agent"
+          description="Deploy an AI agent that speaks your brand voice and resolves common issues without human help."
           href="/chat"
           accent="#10b981"
         />
         <FeatureCard
           icon={<Shield size={24} color="#f59e0b" />}
-          title="Smart Dashboard"
-          description="Track your activity, view analytics, and manage your profile in a beautiful dashboard."
+          title="Success Dashboard"
+          description="Track CSAT, response times, and sentiment trends in real-time with beautiful analytics."
           href="/dashboard"
           accent="#f59e0b"
         />
@@ -83,12 +83,13 @@ export default function Home() {
         marginTop: '6rem', marginBottom: '6rem', display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem'
       }}>
-        <StatItem value="10K+" label="Jobs Found" />
-        <StatItem value="5K+" label="Resumes Analyzed" />
-        <StatItem value="98%" label="User Satisfaction" />
-        <StatItem value="<2s" label="AI Response Time" />
+        <StatItem value="500K+" label="Issues Resolved" />
+        <StatItem value="85%" label="Deflection Rate" />
+        <StatItem value="4.9/5" label="Average CSAT" />
+        <StatItem value="<10s" label="Response Time" />
       </div>
     </div>
+
   );
 }
 
